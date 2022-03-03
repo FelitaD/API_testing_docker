@@ -1,4 +1,4 @@
-from test_template import APITest
+from template.test_template import APITest
 
 
 class ContentTest(APITest):

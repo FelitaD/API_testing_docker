@@ -1,9 +1,10 @@
 import os
 import requests
+import time
 
 
 class APITest:
-    API_ADDRESS = '0.0.0.0'
+    API_ADDRESS = 'fastapi_from_compose'
     API_PORT = 8000
     OUTPUT = '''
     ============================
@@ -32,13 +33,15 @@ class APITest:
         self.params['username'] = username
         self.params['password'] = password
         self.params['sentence'] = kwargs.get('sentence')
+        url = 'http://{address}:{port}/{endpoint}'.format(address=self.API_ADDRESS,
+                                                          port=self.API_PORT,
+                                                          endpoint=self.endpoint)
 
-        r = requests.get(
-            url='http://{address}:{port}/{endpoint}'.format(address=self.API_ADDRESS,
-                                                            port=self.API_PORT,
-                                                            endpoint=self.endpoint),
-            params=self.params
-        )
+        try:
+            r = requests.get(url=url, params=self.params)
+        except ConnectionRefusedError:
+            time.sleep(5)
+            r = requests.get(url=url, params=self.params)
 
         test_status = self.test_condition(r, *args, **kwargs)
 
@@ -50,7 +53,7 @@ class APITest:
                                           test_status=test_status)
 
         if os.environ.get('LOG') == '1':
-            with open('api_test.log', 'a') as file:
+            with open('/home/logs/api_test.log', 'a') as file:
                 file.write(test_results)
 
     def test_condition(self, request, *args, **kwargs):

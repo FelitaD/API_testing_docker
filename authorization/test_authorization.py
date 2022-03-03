@@ -1,4 +1,4 @@
-from test_template import APITest
+from template.test_template import APITest
 
 authorization_v1_test = APITest('v1/sentiment', 'Authorization')
 authorization_v1_test.test_endpoint('alice', 'wonderland', sentence='i love potatoes')

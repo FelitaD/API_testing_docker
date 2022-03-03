@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  fast_api:
+    image: datascientest/fastapi:1.0.0
+    container_name: fastapi_from_compose
+    networks:
+      - my_network_from_compose
+    ports:
+      - "8000:8000"
+  test_authentification:
+    image: test_authentification
+    container_name: test_authentification_from_compose
+    networks:
+      - my_network_from_compose
+    environment:
+      LOG: "1"
+    volumes:
+      - app-volume:/home/logs
+    depends_on:
+      - "fast_api"
+  test_authorization:
+    image: test_authorization
+    container_name: test_authorization_from_compose
+    networks:
+      - my_network_from_compose
+    environment:
+      LOG: "1"
+    volumes:
+      - app-volume:/home/logs
+    depends_on:
+      - "fast_api"
+  test_content:
+    image: test_content
+    container_name: test_content_from_compose
+    networks:
+      - my_network_from_compose
+    environment:
+      LOG: "1"
+    volumes:
+      - app-volume:/home/logs
+    depends_on:
+      - "fast_api"
+networks:
+  my_network_from_compose:
+volumes:
+  app-volume:
